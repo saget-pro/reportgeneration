@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduTrack Pro | Complete Academic Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>EduTrack<span class="logo-highlight">Pro</span></h1>
+                    <p class="tagline">Complete Academic Management System</p>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <div class="nav-actions">
+                <div class="nav-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search students, classes..." id="globalSearch">
+                    <button class="search-clear" onclick="clearGlobalSearch()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="nav-user" onclick="toggleUserMenu()">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name" id="currentUser">Teacher</span>
+                        <span class="user-role">Academic Manager</span>
+                    </div>
+                    <i class="fas fa-chevron-down user-dropdown"></i>
+                </div>
+                
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <div class="notification-bell" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count" id="notificationCount">0</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Dropdown Menu -->
+        <div class="user-dropdown-menu" id="userDropdown">
+            <div class="dropdown-item" onclick="viewProfile()">
+                <i class="fas fa-user"></i>
+                <span>My Profile</span>
+            </div>
+            <div class="dropdown-item" onclick="switchTab('settings-tab')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </div>
+        </div>
+        
+        <!-- Notifications Panel -->
+        <div class="notifications-panel" id="notificationsPanel">
+            <div class="notifications-header">
+                <h3>Notifications</h3>
+                <button class="clear-notifications" onclick="clearNotifications()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+            <div class="notifications-list" id="notificationsList">
+                <!-- Notifications will be loaded here -->
+            </div>
+            <div class="notifications-empty" id="emptyNotifications">
+                <i class="fas fa-bell-slash"></i>
+                <p>No notifications</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar-overlay" id="mobileOverlay"></div>
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="mobile-user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div>
+                    <h3 id="mobileUserName">Teacher</h3>
+                    <small>Academic Manager</small>
+                </div>
+            </div>
+            <button class="close-mobile-sidebar" id="closeMobileSidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-sidebar-menu">
+            <button class="sidebar-btn active" onclick="switchTab('dashboard-tab')">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('classes-tab')">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <span>Classes</span>
+                <span class="menu-badge" id="mobileClassesBadge">0</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('students-tab')">
+                <i class="fas fa-user-graduate"></i>
+                <span>Students</span>
+                <span class="menu-badge" id="mobileStudentsBadge">0</span>
+            </button>
+            <button class="sidebar-btn" onclick="switchTab('analytics-tab')">
+    <i class="fas fa-chart-bar"></i>
+    <span>Analytics</span>
+</button>
+            
+            <button class="sidebar-btn" onclick="switchTab('subjects-tab')">
+                <i class="fas fa-book"></i>
+                <span>Subjects</span>
+                <span class="menu-badge" id="mobileSubjectsBadge">0</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('marks-tab')">
+                <i class="fas fa-edit"></i>
+                <span>Marks</span>
+                <span class="menu-badge" id="mobileMarksBadge">0</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('reports-tab')">
+                <i class="fas fa-file-chart-line"></i>
+                <span>Reports</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('attendance-tab')">
+                <i class="fas fa-calendar-check"></i>
+                <span>Attendance</span>
+            </button>
+            
+            <div class="mobile-sidebar-divider"></div>
+            
+            <button class="sidebar-btn" onclick="showQuickActionModal()">
+                <i class="fas fa-bolt"></i>
+                <span>Quick Actions</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="exportAllData()">
+                <i class="fas fa-file-export"></i>
+                <span>Export Data</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="backupData()">
+                <i class="fas fa-database"></i>
+                <span>Backup</span>
+            </button>
+            
+            <button class="sidebar-btn" onclick="switchTab('settings-tab')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-profile">
+                    <div class="user-avatar large">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="user-profile-info">
+                        <h3 id="sidebarUserName">Teacher</h3>
+                        <small>Academic Manager</small>
+                    </div>
+                </div>
+                <div class="sidebar-stats">
+                    <div class="stat">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <span class="stat-value" id="sidebarStudentCount">0</span>
+                            <span class="stat-label">Students</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-chalkboard"></i>
+                        <div>
+                            <span class="stat-value" id="sidebarClassCount">0</span>
+                            <span class="stat-label">Classes</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <button class="sidebar-btn active" onclick="switchTab('dashboard-tab')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('classes-tab')">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Classes</span>
+                    <span class="menu-badge" id="classesBadge">0</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('students-tab')">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Students</span>
+                    <span class="menu-badge" id="studentsBadge">0</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('subjects-tab')">
+                    <i class="fas fa-book"></i>
+                    <span>Subjects</span>
+                    <span class="menu-badge" id="subjectsBadge">0</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('marks-tab')">
+                    <i class="fas fa-edit"></i>
+                    <span>Marks Entry</span>
+                    <span class="menu-badge" id="marksBadge">0</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('attendance-tab')">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Attendance</span>
+                    <span class="menu-badge" id="attendanceBadge">0</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('reports-tab')">
+                    <i class="fas fa-file-chart-line"></i>
+                    <span>Reports</span>
+                </button>
+                
+                <div class="sidebar-divider"></div>
+                
+                <button class="sidebar-btn" onclick="showQuickActionModal()">
+                    <i class="fas fa-bolt"></i>
+                    <span>Quick Actions</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('analytics-tab')">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </button>
+                
+                <button class="sidebar-btn" onclick="switchTab('settings-tab')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </button>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <div class="status-indicator active"></div>
+                    <span>System Online</span>
+                </div>
+                <div class="storage-info">
+                    <div class="storage-bar">
+                        <div class="storage-fill" id="storageFill"></div>
+                    </div>
+                    <small id="storageText">Storage: 0%</small>
+                </div>
+                <p class="copyright">EduTrack Pro v5.0</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <!-- Dashboard Tab -->
+            <div id="dashboard-tab" class="tab-content active">
+                <div class="dashboard-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-chart-network"></i> Academic Dashboard</h2>
+                        <p>Welcome back! Here's your academic overview</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="date-range">
+                            <i class="fas fa-calendar"></i>
+                            <span id="currentDate">Today</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Total Students</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="studentGrowth">+0%</span>
+                            </div>
+                        </div>
+                        <button class="stat-action" onclick="switchTab('students-tab')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalClasses">0</h3>
+                            <p>Active Classes</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-check-circle"></i>
+                                <span>All active</span>
+                            </div>
+                        </div>
+                        <button class="stat-action" onclick="switchTab('classes-tab')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="averageScore">0%</h3>
+                            <p>Average Score</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span id="scoreGrowth">+0%</span>
+                            </div>
+                        </div>
+                        <button class="stat-action" onclick="switchTab('reports-tab')">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="gradesRecorded">0</h3>
+                            <p>Grades Recorded</p>
+                            <div class="stat-trend">
+                                <i class="fas fa-sync"></i>
+                                <span>Updated</span>
+                            </div>
+                        </div>
+                        <button class="stat-action" onclick="switchTab('marks-tab')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="dashboard-content">
+                    <div class="content-row">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                                <button class="btn btn-outline btn-sm" onclick="showQuickActionModal()">
+                                    More <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="quick-actions-grid">
+                                    <button class="quick-action-btn" onclick="showCreateClassModal()">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                        <span>Create Class</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="showAddStudentModal()">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span>Add Student</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="showCreateSubjectModal()">
+                                        <i class="fas fa-book"></i>
+                                        <span>Add Subject</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="switchTab('marks-tab')">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Enter Marks</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="generateQuickReport()">
+                                        <i class="fas fa-file-download"></i>
+                                        <span>Quick Report</span>
+                                    </button>
+                                    <button class="quick-action-btn" onclick="showBulkUploadModal()">
+                                        <i class="fas fa-upload"></i>
+                                        <span>Bulk Upload</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-pie"></i> Performance Overview</h3>
+                                <select class="chart-filter" id="performanceFilter" onchange="updatePerformanceChart()">
+                                    <option value="all">All Classes</option>
+                                </select>
+                            </div>
+                            <div class="card-body">
+                                <div class="performance-chart">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                                <div class="chart-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: var(--primary-color);"></span>
+                                        <span>Grade A (90-100%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: var(--success-color);"></span>
+                                        <span>Grade B (80-89%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: var(--warning-color);"></span>
+                                        <span>Grade C (70-79%)</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color" style="background: var(--danger-color);"></span>
+                                        <span>Below 70%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-row">
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-user-graduate"></i> Recent Students</h3>
+                                <button class="btn btn-outline btn-sm" onclick="switchTab('students-tab')">
+                                    View All <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="recent-students" id="recentStudents">
+                                    <!-- Recent students will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="content-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                                <button class="btn btn-outline btn-sm" onclick="clearRecentActivity()">
+                                    Clear
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="recent-activity" id="recentActivity">
+                                    <!-- Recent activity will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-trophy"></i> Top Performers</h3>
+                            <select class="chart-filter" id="topPerformerFilter" onchange="updateTopPerformers()">
+                                <option value="all">All Classes</option>
+                            </select>
+                        </div>
+                        <div class="card-body">
+                            <div class="top-performers-grid" id="topPerformers">
+                                <!-- Top performers will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes Management Tab -->
+            <div id="classes-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-chalkboard-teacher"></i> Class Management</h2>
+                        <p>Create, edit, and manage all your classes</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchClasses" placeholder="Search classes...">
+                            <button class="search-clear" onclick="clearClassSearch()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" onclick="showCreateClassModal()">
+                            <i class="fas fa-plus-circle"></i> Create Class
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="classes-grid" id="classesGrid">
+                    <!-- Class cards will be loaded here -->
+                </div>
+                
+                <div class="empty-state" id="emptyClasses" style="display: none;">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>No Classes Found</h3>
+                    <p>Create your first class to get started</p>
+                    <button class="btn btn-primary" onclick="showCreateClassModal()">
+                        <i class="fas fa-plus"></i> Create Class
+                    </button>
+                </div>
+            </div>
+
+            <!-- Students Management Tab -->
+            <div id="students-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-users"></i> Student Management</h2>
+                        <p>Manage student profiles and academic information</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchStudents" placeholder="Search students...">
+                            <button class="search-clear" onclick="clearStudentSearch()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="filter-group">
+                            <select id="filterClass" class="form-select" onchange="filterStudents()">
+                                <option value="">All Classes</option>
+                            </select>
+                            <select id="filterStatus" class="form-select" onchange="filterStudents()">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddStudentModal()">
+                            <i class="fas fa-user-plus"></i> Add Student
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table id="studentsTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">#</th>
+                                    <th>Student</th>
+                                    <th>Student ID</th>
+                                    <th>Class</th>
+                                    <th>Contact</th>
+                                    <th>Parent</th>
+                                    <th>Status</th>
+                                    <th>Grade</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- Student data will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="table-footer">
+                        <div class="table-summary">
+                            Showing <span id="showingCount">0</span> of <span id="totalCount">0</span> students
+                        </div>
+                        <div class="table-pagination">
+                            <button class="pagination-btn" onclick="prevPage()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="pagination-info">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                            <button class="pagination-btn" onclick="nextPage()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subjects Management Tab -->
+            <div id="subjects-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-book"></i> Subject Management</h2>
+                        <p>Create and manage subjects for each class</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchSubjects" placeholder="Search subjects...">
+                            <button class="search-clear" onclick="clearSubjectSearch()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" onclick="showCreateSubjectModal()">
+                            <i class="fas fa-plus"></i> Add Subject
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="content-row">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-list"></i> All Subjects</h3>
+                            <span class="badge" id="totalSubjects">0 subjects</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="subjects-list" id="subjectsList">
+                                <!-- Subjects will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> Subject Statistics</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="subject-stats" id="subjectStats">
+                                <!-- Subject statistics will be loaded here -->
+                            </div>
+                            <div class="subject-distribution">
+                                <canvas id="subjectDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marks Entry Tab -->
+            <div id="marks-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-edit"></i> Marks Entry System</h2>
+                        <p>Enter and manage student marks with advanced calculations</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="filter-group">
+                            <select id="marksClassSelect" class="form-select" onchange="loadClassStudents()">
+                                <option value="">Select Class</option>
+                            </select>
+                            <select id="marksSubjectSelect" class="form-select" onchange="loadSubjectMarks()">
+                                <option value="">Select Subject</option>
+                            </select>
+                            <select id="marksExamType" class="form-select" onchange="loadSubjectMarks()">
+                                <option value="term1">Term 1</option>
+                                <option value="term2">Term 2</option>
+                                <option value="term3">Term 3</option>
+                                <option value="final">Final Exam</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="showBulkMarksModal()">
+                            <i class="fas fa-users"></i> Bulk Entry
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="marks-entry-container" id="marksEntryContainer">
+                    <div class="marks-controls">
+                        <div class="marks-info">
+                            <h3 id="marksTitle">Select Class and Subject</h3>
+                            <div class="marks-subtitle" id="marksSubtitle">
+                                Choose a class and subject to enter marks
+                            </div>
+                        </div>
+                        <div class="marks-tools">
+                            <button class="btn btn-outline" onclick="calculateClassAverage()">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                            <button class="btn btn-success" onclick="saveAllMarks()">
+                                <i class="fas fa-save"></i> Save All
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="marks-table-container">
+                        <table class="marks-table" id="marksTable">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Student ID</th>
+                                    <th>Marks Obtained</th>
+                                    <th>Maximum Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="marksTableBody">
+                                <!-- Marks entry rows will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="marks-summary-card">
+                        <div class="summary-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <span class="summary-label">Total Students</span>
+                                <span class="summary-value" id="marksStudentCount">0</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-percentage"></i>
+                            <div>
+                                <span class="summary-label">Class Average</span>
+                                <span class="summary-value" id="marksClassAverage">0%</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-award"></i>
+                            <div>
+                                <span class="summary-label">Top Score</span>
+                                <span class="summary-value" id="marksTopScore">0</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-chart-line"></i>
+                            <div>
+                                <span class="summary-label">Performance</span>
+                                <span class="summary-value" id="marksPerformance">Good</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-file-chart-line"></i> Reports & Analytics</h2>
+                        <p>Generate comprehensive academic reports and analytics</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="filter-group">
+                            <select id="reportClassSelect" class="form-select" onchange="filterReports()">
+                                <option value="">All Classes</option>
+                            </select>
+                            <select id="reportType" class="form-select" onchange="filterReports()">
+                                <option value="student">Student Reports</option>
+                                <option value="class">Class Reports</option>
+                                <option value="subject">Subject Reports</option>
+                                <option value="term">Term Reports</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="generateAllReports()">
+                            <i class="fas fa-file-download"></i> Generate All
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="reports-controls">
+                    <div class="report-types">
+                        <button class="report-type-btn active" onclick="showReportType('student')">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Student Reports</span>
+                        </button>
+                        <button class="report-type-btn" onclick="showReportType('class')">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <span>Class Reports</span>
+                        </button>
+                        <button class="report-type-btn" onclick="showReportType('subject')">
+                            <i class="fas fa-book"></i>
+                            <span>Subject Reports</span>
+                        </button>
+                        <button class="report-type-btn" onclick="showReportType('term')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Term Reports</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="reports-container">
+                    <div class="reports-list" id="studentReports">
+                        <!-- Student reports will be loaded here -->
+                    </div>
+                    
+                    <div class="reports-list" id="classReports" style="display: none;">
+                        <!-- Class reports will be loaded here -->
+                    </div>
+                    
+                    <div class="reports-list" id="subjectReports" style="display: none;">
+                        <!-- Subject reports will be loaded here -->
+                    </div>
+                    
+                    <div class="reports-list" id="termReports" style="display: none;">
+                        <!-- Term reports will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Tab -->
+            <div id="attendance-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-calendar-check"></i> Attendance Management</h2>
+                        <p>Track and manage student attendance</p>
+                    </div>
+                    <div class="header-actions">
+                        <div class="date-picker">
+                            <input type="date" id="attendanceDate" value="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                        <div class="filter-group">
+                            <select id="attendanceClassSelect" class="form-select" onchange="loadAttendance()">
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveAttendance()">
+                            <i class="fas fa-save"></i> Save Attendance
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="attendance-container" id="attendanceContainer">
+                    <!-- Attendance will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-chart-bar"></i> Advanced Analytics</h2>
+                        <p>Deep insights and performance analytics</p>
+                    </div>
+                    <div class="header-actions">
+                        <select id="analyticsPeriod" class="form-select" onchange="updateAnalytics()">
+                            <option value="weekly">This Week</option>
+                            <option value="monthly">This Month</option>
+                            <option value="quarterly">This Quarter</option>
+                            <option value="yearly">This Year</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="analytics-grid">
+                    <div class="analytics-card full-width">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line"></i> Performance Trends</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="performanceTrendChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Grade Distribution</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="gradeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-users"></i> Class Comparison</h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="classComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="page-header">
+                    <div class="header-content">
+                        <h2><i class="fas fa-cog"></i> System Settings</h2>
+                        <p>Configure your EduTrack Pro system</p>
+                    </div>
+                </div>
+                
+                <div class="settings-container">
+                    <div class="settings-sidebar">
+                        <button class="settings-tab-btn active" onclick="showSettingsTab('general')">
+                            <i class="fas fa-sliders-h"></i>
+                            <span>General</span>
+                        </button>
+                        <button class="settings-tab-btn" onclick="showSettingsTab('academic')">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Academic</span>
+                        </button>
+                        <button class="settings-tab-btn" onclick="showSettingsTab('notifications')">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </button>
+                        <button class="settings-tab-btn" onclick="showSettingsTab('backup')">
+                            <i class="fas fa-database"></i>
+                            <span>Backup & Restore</span>
+                        </button>
+                        <button class="settings-tab-btn" onclick="showSettingsTab('about')">
+                            <i class="fas fa-info-circle"></i>
+                            <span>About</span>
+                        </button>
+                    </div>
+                    
+                    <div class="settings-content">
+                        <div id="generalSettings" class="settings-tab active">
+                            <h3>General Settings</h3>
+                            <!-- General settings will be loaded here -->
+                        </div>
+                        
+                        <div id="academicSettings" class="settings-tab">
+                            <h3>Academic Settings</h3>
+                            <!-- Academic settings will be loaded here -->
+                        </div>
+                        
+                        <div id="notificationSettings" class="settings-tab">
+                            <h3>Notification Settings</h3>
+                            <!-- Notification settings will be loaded here -->
+                        </div>
+                        
+                        <div id="backupSettings" class="settings-tab">
+                            <h3>Backup & Restore</h3>
+                            <!-- Backup settings will be loaded here -->
+                        </div>
+                        
+                        <div id="aboutSettings" class="settings-tab">
+                            <h3>About EduTrack Pro</h3>
+                            <!-- About information will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ====== MODALS ====== -->
+
+    <!-- Create/Edit Class Modal -->
+    <div id="classModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-chalkboard-teacher"></i> <span id="classModalTitle">Create Class</span></h2>
+                <button class="close-modal" onclick="closeModal('classModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="classForm">
+                    <input type="hidden" id="editClassId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-chalkboard"></i> Class Name *</label>
+                            <input type="text" id="className" placeholder="e.g., Grade 10A" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-graduation-cap"></i> Grade Level *</label>
+                            <select id="classGrade" required>
+                                <option value="">Select Grade</option>
+                                <option value="1">Grade 1</option>
+                                <option value="2">Grade 2</option>
+                                <option value="3">Grade 3</option>
+                                <option value="4">Grade 4</option>
+                                <option value="5">Grade 5</option>
+                                <option value="6">Grade 6</option>
+                                <option value="7">Grade 7</option>
+                                <option value="8">Grade 8</option>
+                                <option value="9">Grade 9</option>
+                                <option value="10">Grade 10</option>
+                                <option value="11">Grade 11</option>
+                                <option value="12">Grade 12</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user-tie"></i> Class Teacher *</label>
+                            <input type="text" id="classTeacher" placeholder="Teacher's name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar-alt"></i> Academic Year</label>
+                            <input type="text" id="academicYear" placeholder="e.g., 2024-2025">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-palette"></i> Class Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="classColor" value="#6366f1">
+                            <div class="color-presets">
+                                <div class="color-preset" style="background: #6366f1;" onclick="setColor('#6366f1')"></div>
+                                <div class="color-preset" style="background: #10b981;" onclick="setColor('#10b981')"></div>
+                                <div class="color-preset" style="background: #f59e0b;" onclick="setColor('#f59e0b')"></div>
+                                <div class="color-preset" style="background: #ef4444;" onclick="setColor('#ef4444')"></div>
+                                <div class="color-preset" style="background: #8b5cf6;" onclick="setColor('#8b5cf6')"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Description</label>
+                        <textarea id="classDescription" placeholder="Optional description about the class" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-gradient">
+                            <i class="fas fa-save"></i> <span id="classSubmitText">Create Class</span>
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('classModal')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-graduate"></i> <span id="studentModalTitle">Add Student</span></h2>
+                <button class="close-modal" onclick="closeModal('studentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <input type="hidden" id="editStudentId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Full Name *</label>
+                            <input type="text" id="studentName" placeholder="Enter student name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-id-card"></i> Student ID</label>
+                            <input type="text" id="studentId" placeholder="Auto-generated">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-chalkboard-teacher"></i> Class *</label>
+                            <select id="studentClass" required>
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-venus-mars"></i> Gender</label>
+                            <select id="studentGender">
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-school"></i> School *</label>
+                            <input type="text" id="schoolName" placeholder="School name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="studentEmail" placeholder="student@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-phone"></i> Phone *</label>
+                            <input type="tel" id="phoneNumber" placeholder="(123) 456-7890" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-birthday-cake"></i> Date of Birth</label>
+                            <input type="date" id="studentDOB">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-home"></i> Address</label>
+                        <textarea id="studentAddress" placeholder="Student's address" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-users"></i> Parent/Guardian Information</label>
+                        <div class="parent-info">
+                            <input type="text" id="parentName" placeholder="Parent/Guardian name" required>
+                            <input type="tel" id="parentPhone" placeholder="Parent phone number">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-gradient">
+                            <i class="fas fa-save"></i> <span id="studentSubmitText">Add Student</span>
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('studentModal')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Subject Modal -->
+    <div id="subjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-book"></i> <span id="subjectModalTitle">Add Subject</span></h2>
+                <button class="close-modal" onclick="closeModal('subjectModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="subjectForm">
+                    <input type="hidden" id="editSubjectId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-book"></i> Subject Name *</label>
+                            <input type="text" id="subjectName" placeholder="e.g., Mathematics" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-chalkboard"></i> For Class *</label>
+                            <select id="subjectClass" required>
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-percentage"></i> Maximum Marks *</label>
+                            <input type="number" id="subjectMaxMarks" min="1" max="200" value="100" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-percentage"></i> Pass Marks</label>
+                            <input type="number" id="subjectPassMarks" min="0" max="100" value="40">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-palette"></i> Subject Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="subjectColor" value="#6366f1">
+                            <div class="color-presets">
+                                <div class="color-preset" style="background: #6366f1;" onclick="setSubjectColor('#6366f1')"></div>
+                                <div class="color-preset" style="background: #10b981;" onclick="setSubjectColor('#10b981')"></div>
+                                <div class="color-preset" style="background: #f59e0b;" onclick="setSubjectColor('#f59e0b')"></div>
+                                <div class="color-preset" style="background: #ef4444;" onclick="setSubjectColor('#ef4444')"></div>
+                                <div class="color-preset" style="background: #8b5cf6;" onclick="setSubjectColor('#8b5cf6')"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tie"></i> Subject Teacher</label>
+                        <input type="text" id="subjectTeacher" placeholder="Teacher's name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Description</label>
+                        <textarea id="subjectDescription" placeholder="Optional subject description" rows="2"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-gradient">
+                            <i class="fas fa-save"></i> <span id="subjectSubmitText">Add Subject</span>
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="closeModal('subjectModal')">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h2>
+                <button class="close-modal" onclick="closeModal('deleteModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-icon">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+                <h3 id="deleteTitle">Are you sure?</h3>
+                <p id="deleteMessage">This action cannot be undone. All associated data will be permanently deleted.</p>
+                
+                <div class="delete-details" id="deleteDetails">
+                    <!-- Deletion details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmDelete" class="btn btn-danger btn-gradient">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button class="btn btn-outline" onclick="closeModal('deleteModal')">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Generation Modal -->
+    <div id="reportModal" class="modal large-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-pdf"></i> <span id="reportModalTitle">Generate Report</span></h2>
+                <button class="close-modal" onclick="closeModal('reportModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="reportGenerator">
+                    <!-- Report generator will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions Modal -->
+    <div id="quickActionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                <button class="close-modal" onclick="closeModal('quickActionsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="quick-actions-grid-modal">
+                    <button class="quick-action-modal" onclick="showCreateClassModal(); closeModal('quickActionsModal');">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <span>Create Class</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="showAddStudentModal(); closeModal('quickActionsModal');">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Add Student</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="showCreateSubjectModal(); closeModal('quickActionsModal');">
+                        <i class="fas fa-book"></i>
+                        <span>Add Subject</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="showBulkMarksModal(); closeModal('quickActionsModal');">
+                        <i class="fas fa-users"></i>
+                        <span>Bulk Marks</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="generateQuickReport(); closeModal('quickActionsModal');">
+                        <i class="fas fa-file-download"></i>
+                        <span>Quick Report</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="exportAllData(); closeModal('quickActionsModal');">
+                        <i class="fas fa-file-export"></i>
+                        <span>Export Data</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="backupData(); closeModal('quickActionsModal');">
+                        <i class="fas fa-database"></i>
+                        <span>Backup Now</span>
+                    </button>
+                    <button class="quick-action-modal" onclick="printDashboard(); closeModal('quickActionsModal');">
+                        <i class="fas fa-print"></i>
+                        <span>Print Dashboard</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Marks Modal -->
+    <div id="bulkMarksModal" class="modal large-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Bulk Marks Entry</h2>
+                <button class="close-modal" onclick="closeModal('bulkMarksModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="bulkMarksContent">
+                    <!-- Bulk marks content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <button class="fab-btn main" id="fabMain">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="fab-actions">
+            <button class="fab-btn" onclick="showCreateClassModal()" title="Create Class">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </button>
+            <button class="fab-btn" onclick="showAddStudentModal()" title="Add Student">
+                <i class="fas fa-user-plus"></i>
+            </button>
+            <button class="fab-btn" onclick="showCreateSubjectModal()" title="Add Subject">
+                <i class="fas fa-book"></i>
+            </button>
+            <button class="fab-btn" onclick="showQuickActionModal()" title="Quick Actions">
+                <i class="fas fa-bolt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
